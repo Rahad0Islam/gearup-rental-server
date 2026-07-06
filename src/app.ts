@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import config from "./config/config";
 import { prisma } from "./lib/prisma";
+import { authRouter } from "./module/auth/auth.router";
 
 
 const app: Application = express();
@@ -23,5 +24,7 @@ app.get("/", async (req, res) => {
   res.send("Hello World!");
 });
 
+
+app.use('/api/v1/auth', authRouter);
 
 export default app;
