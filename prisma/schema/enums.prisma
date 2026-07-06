@@ -8,3 +8,35 @@ enum ActiveStatus {
     ACTIVE
     SUSPENDED
 }
+
+enum gearItemStatus {
+    AVAILABLE
+    UNAVAILABLE
+}
+
+enum rentalOrderStatus {
+    PLACED
+    CONFIRMED
+    PAID
+    PICKED_UP
+    RETURNED
+    LATE_RETURN
+    CANCELLED
+}
+
+enum paymentStatus {
+    PENDING
+    PAID
+    FAILED
+    CANCELLED
+}
+
+enum paymentMethod {
+    stripe
+    cash
+}
+
+enum paymentType {
+    RENTAL
+    LATE_FEE
+}

@@ -1,0 +1,17 @@
+model payments {
+  id          String   @id @default(uuid())
+  amount      Float
+  paymentDate DateTime @default(now())
+  paymentMethod paymentMethod
+  status      paymentStatus @default(PENDING)
+  checkOutSessionId String?  @db.VarChar(255)
+  transactionId String?  @db.VarChar(255)
+  paymentType paymentType @default(RENTAL)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rentalOrderId String 
+  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id])
+
+  @@map("payments")
+}
