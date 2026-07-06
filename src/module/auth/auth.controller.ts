@@ -48,9 +48,20 @@ const login = asyncHandler(async (req: Request, res: Response,next:NextFunction)
     });
 });
 
+// const me = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
+//     const userId = req.user?.id;
+//     const user = await authService.meFromDb(userId!);
 
+//     return sendResponse(res, {
+//         success: true,
+//         statuscode: httpStatus.OK,
+//         message: "User fetched successfully",
+//         data: user,
+//     });
+// });
 
 export const authController = {
   registerUser,
   login,
+//   me,
 };

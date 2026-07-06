@@ -97,8 +97,21 @@ const loginIntoDb = async (userData: Ilogin) => {
  
 };
 
+const meFromDb = async (userId: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+    omit: {
+      password: true,
+    },
+  });
+
+  return user;
+};
 
 export const authService = {
     registerIntoDb,
     loginIntoDb,
+    meFromDb
 }
