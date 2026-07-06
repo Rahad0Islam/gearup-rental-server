@@ -8,6 +8,6 @@ const addGearToDb = async (gearData: any) => {
   return newGear;
 };
 
-export const providerService = {
+export const gearService = {
   addGearToDb,
 };
