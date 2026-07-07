@@ -6,6 +6,7 @@ import config from "./config/config";
 import { authRouter } from "./module/auth/auth.router";
 import { gearRouter } from "./module/gear/gear.router";
 import { categoryRouter } from "./module/category/category.router";
+import { rentalOrderRouter } from "./module/rentalOrder/rentalOrder.router";
 
 
 const app: Application = express();
@@ -29,5 +30,6 @@ app.get("/", async (req, res) => {
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/gear', gearRouter);
 app.use('/api/v1/category', categoryRouter);
+app.use('/api/v1/rental-order', rentalOrderRouter);
 
 export default app;
