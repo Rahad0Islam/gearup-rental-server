@@ -58,9 +58,25 @@ const deleteRentalOrder = asyncHandler(async (req: Request, res: Response, next:
     });
 });
 
+const confirmRentalOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { rentalOrderId } = req.params;
+    const updateData = req.body;
+
+    const updatedRentalOrder = await rentalOrderService.confirmRentalOrderInDb(rentalOrderId as string, updateData);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Rental order confirmed successfully",
+        data: updatedRentalOrder
+    });
+});
+
+
 export const rentalOrderController = {
     createRentalOrder,
     getRentalOrders,
     getRentalOrderById,
-    deleteRentalOrder
+    deleteRentalOrder,
+    confirmRentalOrder
 };  

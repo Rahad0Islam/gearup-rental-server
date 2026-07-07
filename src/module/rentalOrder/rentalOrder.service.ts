@@ -1,4 +1,4 @@
-import { Role } from "../../../generated/prisma/client";
+import { rentalOrderStatus, Role } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { IrentalOrder } from "./rentalOrder.interface";
 
@@ -271,9 +271,29 @@ const deleteRentalOrderFromDb = async (rentalOrderId: string) => {
   });
   
 };
+
+const confirmRentalOrderInDb = async (rentalOrderId: string, updateData: Partial<IrentalOrder>) => {
+  const {status} = updateData;
+   
+   const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
+    where: { id: rentalOrderId },
+  });
+
+  if(status && status !== rentalOrderStatus.PLACED){
+     throw new Error("Only rental orders with status 'PLACED' can be updated.");
+  }
+
+  return await prisma.rentalOrder.update({
+    where: { id: rentalOrderId },
+    data:{
+      status: rentalOrderStatus.CONFIRMED
+    }
+  });
+};
 export const rentalOrderService = {
   createRentalOrderInDb,
   getRentalOrdersFromDb,
   getRentalOrderByIdFromDb,
-  deleteRentalOrderFromDb
+  deleteRentalOrderFromDb,
+  confirmRentalOrderInDb
 };
