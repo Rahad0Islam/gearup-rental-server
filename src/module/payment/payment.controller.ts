@@ -8,7 +8,25 @@ const createCheckoutSession = asyncHandler(async (req: Request, res: Response, n
    
    const userId = req.user?.id;
    const rentalOrderId = req.body.rentalOrderId;
-   const checkoutSession = await paymentService.createCheckoutSession( userId as string, rentalOrderId as string);
+   const paymentType = req.body.paymentType;
+   if(!rentalOrderId || !paymentType){
+    return sendResponse(res,{
+        success: false,
+        statuscode: httpStatus.BAD_REQUEST,
+        message: "rentalOrderId and paymentType are required",
+        data: null
+    });
+   }
+
+   if(paymentType !== "RENTAL" && paymentType !== "LATE_FEE"){
+    return sendResponse(res,{
+        success: false,
+        statuscode: httpStatus.BAD_REQUEST,
+        message: "Invalid paymentType. Must be either 'RENTAL' or 'LATE_FEE'",
+        data: null
+    });
+   }
+   const checkoutSession = await paymentService.createCheckoutSession( userId as string, rentalOrderId as string,paymentType as string  );
 
    return sendResponse(res,{
        success: true,

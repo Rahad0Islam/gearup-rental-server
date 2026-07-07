@@ -358,6 +358,18 @@ const returnRentalOrderInDb = async (rentalOrderId: string, role: string) => {
         totalAmount: rentalOrder.totalAmount! + extraCharge,
       }
     });
+
+     for (const item of rentalOrder.rentalOrderItems) {
+    await tx.gearItems.update({
+      where: { id: item.gearItemId },
+      data: {
+        availableStock: {
+          increment: item.quantity,
+        },
+      },
+    });
+  }
+
     return `Rental order returned late. Extra charge of ${extraCharge} has been added to the total amount.`;
   }
   
