@@ -302,7 +302,7 @@ const pickupRentalOrderInDb = async (rentalOrderId: string, role: string) => {
     where: { id: rentalOrderId },
   });
   
-  if(rentalOrder.returnDate > new Date()){
+  if(rentalOrder.returnDate < new Date()){
     throw new Error("Pickup date cannot be after the return date.");
   }
   if(rentalOrder.status !== rentalOrderStatus.PAID){
@@ -318,12 +318,81 @@ const pickupRentalOrderInDb = async (rentalOrderId: string, role: string) => {
   });
 };
 
+
+const returnRentalOrderInDb = async (rentalOrderId: string, role: string) => {
+
+  if(role === Role.CUSTOMER){
+    throw new Error("Only ADMIN or PROVIDER can update the rental order status to 'RETURNED'.");
+  }
+
+  return await prisma.$transaction(async (tx) => {
+      const rentalOrder = await tx.rentalOrder.findUniqueOrThrow({
+      where: { id: rentalOrderId },
+      include: {
+        rentalOrderItems: true,
+      },
+    
+   });
+
+  if(rentalOrder.status === rentalOrderStatus.LATE_RETURN){
+    throw new Error("This rental order has already been marked as 'LATE_RETURN'.");
+  }
+  
+  if(rentalOrder.status !== rentalOrderStatus.PICKED_UP){
+     throw new Error("Only rental orders with status 'PICKED_UP' can be updated to 'RETURNED'.");
+  }
+
+  if(rentalOrder.returnDate < new Date()){
+    const extraDays = Math.ceil((new Date().getTime() - rentalOrder.returnDate.getTime()) / (1000 * 60 * 60 * 24));
+    const rentalDays = Math.ceil((rentalOrder.returnDate.getTime() - rentalOrder.pickupDate!.getTime()) / (1000 * 60 * 60 * 24)); 
+
+    const extraCharge = Math.ceil((rentalOrder.totalAmount!/rentalDays) * extraDays * 1.1); // 10% of actual rent amount per extra day
+
+    
+    await tx.rentalOrder.update({
+      where: { id: rentalOrderId },
+      data:{
+        
+        lateFee: extraCharge,
+        status: rentalOrderStatus.LATE_RETURN,
+        totalAmount: rentalOrder.totalAmount! + extraCharge,
+      }
+    });
+    return `Rental order returned late. Extra charge of ${extraCharge} has been added to the total amount.`;
+  }
+  
+    for (const item of rentalOrder.rentalOrderItems) {
+    await tx.gearItems.update({
+      where: { id: item.gearItemId },
+      data: {
+        availableStock: {
+          increment: item.quantity,
+        },
+      },
+    });
+  }
+
+  return await tx.rentalOrder.update({
+    where: { id: rentalOrderId },
+    data:{
+      status: rentalOrderStatus.RETURNED,
+      actualReturnDate: new Date()
+    }
+  });
+
+ 
+
+  });
+ 
+}
+
 export const rentalOrderService = {
   createRentalOrderInDb,
   getRentalOrdersFromDb,
   getRentalOrderByIdFromDb,
   deleteRentalOrderFromDb,
   confirmRentalOrderInDb,
-  pickupRentalOrderInDb
+  pickupRentalOrderInDb,
+  returnRentalOrderInDb
 };
 

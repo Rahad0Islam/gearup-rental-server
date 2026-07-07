@@ -83,12 +83,29 @@ const pickupRentalOrder = asyncHandler(async (req: Request, res: Response, next:
         data: updatedRentalOrder
     });
 });
+
+
+const returnRentalOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { rentalOrderId } = req.params;
+    const role = req.user?.role;
+    const updatedRentalOrder = await rentalOrderService.returnRentalOrderInDb(rentalOrderId as string,role as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Rental order returned successfully",
+        data: updatedRentalOrder
+    });
+});
+
+
 export const rentalOrderController = {
     createRentalOrder,
     getRentalOrders,
     getRentalOrderById,
     deleteRentalOrder,
     confirmRentalOrder,
-    pickupRentalOrder
+    pickupRentalOrder,
+    returnRentalOrder
 };  
    

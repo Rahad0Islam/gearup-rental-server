@@ -11,6 +11,7 @@ router.get('/:rentalOrderId',auth(Role.CUSTOMER,Role.ADMIN,Role.PROVIDER), renta
 router.delete('/:rentalOrderId',auth(Role.ADMIN), rentalOrderController.deleteRentalOrder);
 router.patch('/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER), rentalOrderController.confirmRentalOrder);
 router.patch('/pickup/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER), rentalOrderController.pickupRentalOrder);
+router.patch('/return/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER), rentalOrderController.returnRentalOrder);
 
 
 export const rentalOrderRouter = router;
