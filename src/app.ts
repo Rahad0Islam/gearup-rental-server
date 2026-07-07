@@ -8,6 +8,7 @@ import { gearRouter } from "./module/gear/gear.router";
 import { categoryRouter } from "./module/category/category.router";
 import { rentalOrderRouter } from "./module/rentalOrder/rentalOrder.router";
 import { paymentRouter } from "./module/payment/payment.router";
+import { reviewRouter } from "./module/review/review.router";
 
 
 const app: Application = express();
@@ -35,5 +36,6 @@ app.use('/api/v1/gear', gearRouter);
 app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/rental-order', rentalOrderRouter);
 app.use('/api/v1/payment', paymentRouter);
+app.use('/api/v1/review', reviewRouter);
 
 export default app;
