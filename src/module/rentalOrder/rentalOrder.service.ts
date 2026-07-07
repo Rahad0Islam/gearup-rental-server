@@ -272,15 +272,15 @@ const deleteRentalOrderFromDb = async (rentalOrderId: string) => {
   
 };
 
-const confirmRentalOrderInDb = async (rentalOrderId: string, updateData: Partial<IrentalOrder>) => {
-  const {status} = updateData;
+const confirmRentalOrderInDb = async (rentalOrderId: string) => {
+
    
    const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
     where: { id: rentalOrderId },
   });
 
-  if(status && status !== rentalOrderStatus.PLACED){
-     throw new Error("Only rental orders with status 'PLACED' can be updated.");
+  if(rentalOrder.status !== rentalOrderStatus.PLACED){
+    throw new Error("Only rental orders with status 'PENDING' can be confirmed.");
   }
 
   return await prisma.rentalOrder.update({
@@ -290,10 +290,40 @@ const confirmRentalOrderInDb = async (rentalOrderId: string, updateData: Partial
     }
   });
 };
+
+
+const pickupRentalOrderInDb = async (rentalOrderId: string, role: string) => {
+
+  if(role === Role.CUSTOMER){
+    throw new Error("Only ADMIN or PROVIDER can update the rental order status to 'PICKED_UP'.");
+  }
+
+  const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
+    where: { id: rentalOrderId },
+  });
+  
+  if(rentalOrder.returnDate > new Date()){
+    throw new Error("Pickup date cannot be after the return date.");
+  }
+  if(rentalOrder.status !== rentalOrderStatus.PAID){
+     throw new Error("Only rental orders with status 'PAID' can be updated to 'PICKED_UP'.");
+  }
+
+  return await prisma.rentalOrder.update({
+    where: { id: rentalOrderId },
+    data:{
+      status: rentalOrderStatus.PICKED_UP,
+      actualPickupDate: new Date()
+    }
+  });
+};
+
 export const rentalOrderService = {
   createRentalOrderInDb,
   getRentalOrdersFromDb,
   getRentalOrderByIdFromDb,
   deleteRentalOrderFromDb,
-  confirmRentalOrderInDb
+  confirmRentalOrderInDb,
+  pickupRentalOrderInDb
 };
+
