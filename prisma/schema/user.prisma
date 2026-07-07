@@ -14,4 +14,5 @@ model User {
   reviews review[]
 
   @@map("users")
+  payments payments[]
 }

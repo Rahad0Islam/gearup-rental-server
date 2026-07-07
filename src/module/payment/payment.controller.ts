@@ -20,6 +20,20 @@ const createCheckoutSession = asyncHandler(async (req: Request, res: Response, n
 })
 
 
+const handleStripeWebhook = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const event  = req.body as Buffer;
+    const signature = req.headers['stripe-signature']!;
+
+    await paymentService.handleStripeWebhook(event, signature as string);
+    sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Webhook handled successfully",
+        data: null
+    }); 
+});
+
 export const paymentController = {
-    createCheckoutSession
+    createCheckoutSession,
+    handleStripeWebhook
 }

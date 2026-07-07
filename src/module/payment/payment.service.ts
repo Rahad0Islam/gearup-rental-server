@@ -1,8 +1,9 @@
-import { rentalOrderStatus } from "../../../generated/prisma/enums";
+import { paymentMethod, paymentStatus, rentalOrderStatus } from "../../../generated/prisma/enums";
 import config from "../../config/config";
 import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
 import Stripe from "stripe";
+import { sessionCompleted } from "./payment.utils";
 
 const createCheckoutSession = async (userId: string, rentalOrderId: string) => {
 
@@ -28,7 +29,20 @@ const createCheckoutSession = async (userId: string, rentalOrderId: string) => {
             throw new Error("Checkout session can only be created for rental orders with status 'CONFIRMED'.");
         }
 
-       
+         const status = await tx.payments.findFirst({
+            where: {
+                rentalOrderId,
+                paymentMethod: paymentMethod.stripe
+            },
+        });
+
+        if(status && status?.status === paymentStatus.PAID){
+            throw new Error("Payment has already been completed for this rental order.");
+        }
+
+        if(status){
+            return status.checkoutUrl;
+        }
         const billingData = rentalOrder.rentalOrderItems.map(item => ({
               itemName: item.gearItem.name,
               quantity: item.quantity,
@@ -64,6 +78,20 @@ const createCheckoutSession = async (userId: string, rentalOrderId: string) => {
             cancel_url: `${config.app_url}/payment-cancelled`,
         });
 
+
+       
+        await tx.payments.create({
+            data: {
+                rentalOrderId: rentalOrder.id,
+                customerId: rentalOrder.customerId,
+                checkOutSessionId: session.id,
+                amount: rentalOrder.totalAmount!,
+                status: paymentStatus.PENDING,
+                paymentMethod:paymentMethod.stripe,
+                checkoutUrl: session.url!,
+            },
+        });
+
         return session.url;
     });
 
@@ -71,6 +99,33 @@ const createCheckoutSession = async (userId: string, rentalOrderId: string) => {
 }
 
 
+const handleStripeWebhook = async (payload: Buffer, signature: string) => {
+   
+     const endpointSecret = config.stripe_webhook_secret;
+        const event = stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        endpointSecret
+      );
+
+
+      console.log("Received Stripe event:", event.type);
+
+      switch (event.type) {
+        case 'checkout.session.completed':
+          const session = event.data.object as Stripe.Checkout.Session;
+          await sessionCompleted(session);
+
+          console.log(`Checkout session completed: ${session.id}`);
+          break;
+
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+
+    
+};
 export const paymentService = {
-    createCheckoutSession
+    createCheckoutSession,
+    handleStripeWebhook
 }

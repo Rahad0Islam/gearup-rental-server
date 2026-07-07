@@ -4,14 +4,18 @@ model payments {
   paymentDate DateTime @default(now())
   paymentMethod paymentMethod
   status      paymentStatus @default(PENDING)
-  checkOutSessionId String?  @db.VarChar(255)
+  checkOutSessionId String?  @db.VarChar(255) @unique
   transactionId String?  @db.VarChar(255)
   paymentType paymentType @default(RENTAL)
+  checkoutUrl String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   rentalOrderId String 
   rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id])
+
+  customerId String
+  customer   User @relation(fields: [customerId], references: [id])
 
   @@map("payments")
 }

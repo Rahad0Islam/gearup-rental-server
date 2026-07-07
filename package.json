@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "stripe:webhook": "stripe listen --forward-to localhost:8000/api/subscription/webhook",
+    "stripe:webhook": "stripe listen --forward-to localhost:8000/api/v1/payment/webhook",
     "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
