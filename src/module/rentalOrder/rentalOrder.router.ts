@@ -6,5 +6,6 @@ import { Role } from "../../../generated/prisma/client";
 const router = Router();
 
 router.post('/',auth(Role.CUSTOMER,Role.ADMIN), rentalOrderController.createRentalOrder);
+router.get('/',auth(Role.CUSTOMER,Role.ADMIN,Role.PROVIDER), rentalOrderController.getRentalOrders);
 
 export const rentalOrderRouter = router;

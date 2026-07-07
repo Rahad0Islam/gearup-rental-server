@@ -18,6 +18,20 @@ const createRentalOrder = asyncHandler(async (req: Request, res: Response,next:N
     });
 });  
   
+const getRentalOrders = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
+    const userId = req.user?.id;
+    const userRole = req.user?.role;
+    const rentalOrders = await rentalOrderService.getRentalOrdersFromDb(userId as string, userRole as string);
+    
+    return sendResponse(res,{
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Rental orders fetched successfully",
+        data: rentalOrders
+    });
+});
+
 export const rentalOrderController = {
   createRentalOrder,
+  getRentalOrders,
 };

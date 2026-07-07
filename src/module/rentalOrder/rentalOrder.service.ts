@@ -1,3 +1,4 @@
+import { Role } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { IrentalOrder } from "./rentalOrder.interface";
 
@@ -145,6 +146,50 @@ const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: s
   });
 };
 
+
+const getRentalOrdersFromDb = async (userId: string, userRole: string) => {
+     // ADMIN can see all orders, CUSTOMER can see their own orders, PROVIDER can see orders for their gear
+  let whereClause = {};
+
+  if (userRole === Role.CUSTOMER) {
+    whereClause = { customerId: userId };
+  } else if (userRole === Role.PROVIDER) {
+    const providerGearItems = await prisma.gearItems.findMany({
+      where: { providerId: userId },
+      select: { id: true },
+    });
+
+    const providerGearItemIds = providerGearItems.map((item) => item.id);
+
+    whereClause = {
+      rentalOrderItems: {
+        some: {
+          gearItemId: { in: providerGearItemIds },
+        },
+      },
+    };
+  }
+
+  return await prisma.rentalOrder.findMany({
+    where: whereClause,
+    include: {
+      rentalOrderItems: {
+        include: {
+          gearItem: true,
+        },
+      },
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+};
+
 export const rentalOrderService = {
   createRentalOrderInDb,
+  getRentalOrdersFromDb,
 };
