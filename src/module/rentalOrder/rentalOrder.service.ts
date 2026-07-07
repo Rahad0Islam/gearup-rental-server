@@ -189,7 +189,91 @@ const getRentalOrdersFromDb = async (userId: string, userRole: string) => {
   });
 };
 
+
+const getRentalOrderByIdFromDb = async (rentalOrderId: string, userId: string, userRole: string) => {
+    
+    const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
+      where: { id: rentalOrderId },
+      include: {
+        rentalOrderItems: {
+          include: {
+            gearItem: true,
+          },
+        },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    })
+
+    if(userRole === Role.ADMIN){
+      return rentalOrder;
+    } 
+    
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+     
+
+    //for customer, check if the order belongs to them
+    if( rentalOrder.customerId === userId){
+       return rentalOrder;
+    }
+
+    const rentalOrderItemId = rentalOrder.rentalOrderItems[0]?.gearItem.providerId;
+    if(rentalOrderItemId === userId){
+      return rentalOrder;
+    }
+
+    throw new Error("You do not have permission to view this rental order.");
+
+    
+
+}
+
+const deleteRentalOrderFromDb = async (rentalOrderId: string) => {
+
+  return await prisma.$transaction(async (tx) => {
+     const rentalOrder = await tx.rentalOrder.findUniqueOrThrow({
+    where: { id: rentalOrderId },
+    include: {
+      rentalOrderItems: true,
+    },
+  });
+
+  // Restore stock for each gear item in the order
+  for (const item of rentalOrder.rentalOrderItems) {
+    await tx.gearItems.update({
+      where: { id: item.gearItemId },
+      data: {
+        availableStock: {
+          increment: item.quantity,
+        },
+      },
+    });
+  }
+
+  // Delete the rental order and its items
+  await tx.rentalOrderItems.deleteMany({
+    where: { rentalOrderId },
+  });
+
+  await tx.rentalOrder.delete({
+    where: { id: rentalOrderId },
+  });
+
+  return { message: "Rental order deleted successfully." };
+
+  });
+  
+};
 export const rentalOrderService = {
   createRentalOrderInDb,
   getRentalOrdersFromDb,
+  getRentalOrderByIdFromDb,
+  deleteRentalOrderFromDb
 };

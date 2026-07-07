@@ -31,7 +31,36 @@ const getRentalOrders = asyncHandler(async (req: Request, res: Response,next:Nex
     });
 });
 
+const getRentalOrderById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user?.id;
+    const userRole = req.user?.role;
+    const { rentalOrderId } = req.params;
+
+    const rentalOrder = await rentalOrderService.getRentalOrderByIdFromDb(rentalOrderId as string, userId as string, userRole as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Rental order fetched successfully",
+        data: rentalOrder
+    });
+});
+
+const deleteRentalOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { rentalOrderId } = req.params;
+    const deletedRentalOrder = await rentalOrderService.deleteRentalOrderFromDb(rentalOrderId as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Rental order deleted successfully",
+        data: []
+    });
+});
+
 export const rentalOrderController = {
-  createRentalOrder,
-  getRentalOrders,
-};
+    createRentalOrder,
+    getRentalOrders,
+    getRentalOrderById,
+    deleteRentalOrder
+};  
