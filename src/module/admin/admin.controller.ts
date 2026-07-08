@@ -7,7 +7,8 @@ import httpStatus from "http-status";
 
 const getAllUser = asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
      
-     const usersList = await adminService.getAllUserFromDb();
+    const queryParams = req.query;
+     const usersList = await adminService.getAllUserFromDb( queryParams);
     
      return sendResponse(res,{
         success:true,
@@ -19,8 +20,8 @@ const getAllUser = asyncHandler(async(req:Request,res:Response,next:NextFunction
 })
 
 const updateUserStatus = asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    // Implementation for updating a user will go here
-    const { id } = req.params;// Assuming the new status is sent in the request body
+
+    const { id } = req.params;
     const { status } = req.body;
     console.log(status,id)
     const updatedUser = await adminService.updateUserInDb(id as string, status as string);

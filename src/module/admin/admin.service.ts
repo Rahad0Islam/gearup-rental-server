@@ -1,12 +1,66 @@
 import { ActiveStatus } from "../../../generated/prisma/client";
+import { UserWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma"
+import { IuserSearchQuery } from "./admin.interface";
 
-const getAllUserFromDb = async()=>{
+const getAllUserFromDb = async(query: IuserSearchQuery)=>{
     
+    const limit = query.limit ? Number(query.limit) : 10;
+    const page = query.page ? Number(query.page) : 1;
+    const skip = (page - 1) * limit;
+    const sortBy = query.sortBy ? query.sortBy : "createdAt";
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc";
+
+     const andCondition : UserWhereInput[] = [];
+
+    if(query.searchTerm){
+    andCondition.push({
+        OR:[
+            {
+                name:{
+                    contains:query.searchTerm,
+                    mode:"insensitive"
+                }
+            }
+        ]
+    })
+    }
+
+
+
+
+    if(query.name){
+        andCondition.push({
+            name:query.name
+        })
+    }
+
+     if(query.id){
+        andCondition.push({
+            id:query.id
+        })
+    }
+
+    if(query.activeStatus){
+        andCondition.push({
+            activeStatus:query.activeStatus as ActiveStatus
+        })
+    }
+
+
     const getAllUser = await prisma.user.findMany({
+        where:{
+            AND:andCondition
+        },
+        take:limit,
+        skip:skip,
+        orderBy:{
+            [sortBy]:sortOrder
+        },
         omit:{
             password:true
         }
+
     });
 
     return getAllUser;
