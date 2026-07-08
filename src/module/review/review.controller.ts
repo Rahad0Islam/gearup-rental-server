@@ -9,6 +9,7 @@ const createReview = asyncHandler(async (req: Request, res: Response) => {
     const { rentalOrderId, rating, comment } = req.body;
     const userId = req.user?.id;
     const role = req.user?.role;
+    const gearitemId = req.query.gearitemId as string;
 
     if (!rentalOrderId || !rating) {
         return sendResponse(res, {
@@ -19,7 +20,7 @@ const createReview = asyncHandler(async (req: Request, res: Response) => {
         });
     }
 
-    const review = await reviewService.createReview(userId as string, rentalOrderId, rating, comment,role as string);
+    const review = await reviewService.createReview(userId as string, rentalOrderId, rating, comment,role as string,gearitemId as string);
 
     return sendResponse(res, {
         success: true,
@@ -78,8 +79,31 @@ const deleteReview = asyncHandler(async (req: Request, res: Response) => {
         data: null
     });
 });
+
+const getReviewsByGearItemId = asyncHandler(async (req: Request, res: Response) => {
+    const gearitemId = req.params.gearitemid;
+
+    if (!gearitemId) {
+        return sendResponse(res, {
+            success: false,
+            statuscode: httpStatus.BAD_REQUEST,
+            message: "gearitemId is required",
+            data: null
+        });
+    }
+
+    const reviews = await reviewService.getReviewsByGearItemId(gearitemId as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Reviews fetched successfully",
+        data: reviews
+    });
+});
 export const reviewController = {
     createReview,
     updateReview,
-    deleteReview
+    deleteReview,
+    getReviewsByGearItemId
 }

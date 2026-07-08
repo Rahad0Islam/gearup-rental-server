@@ -1,7 +1,7 @@
 import { Role } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
-const createReviewInDb = async (userId: string, rentalOrderId: string, rating: number, comment: string, role: string) => {
+const createReviewInDb = async (userId: string, rentalOrderId: string, rating: number, comment: string, role: string, gearitemId: string) => {
     const rentalOrder = await prisma.rentalOrder.findUnique({
         where: { id: rentalOrderId },
         include: {
@@ -21,28 +21,59 @@ const createReviewInDb = async (userId: string, rentalOrderId: string, rating: n
     }
 }
 
-    const existingReview = await prisma.review.findFirst({
+    // const existingReview = await prisma.review.findFirst({
+    //     where: {
+    //         rentalOrderId: rentalOrderId,
+    //         customerId: userId
+    //     },
+    // });
+
+    // if (existingReview) {
+    //     throw new Error("User has already reviewed this rental order");
+    // }
+   
+   return await prisma.$transaction(async (tx) => {
+        for(const item of rentalOrder.rentalOrderItems) {
+        if(gearitemId){
+            if(item.gearItemId !== gearitemId){
+                continue;
+            }
+        }
+       const reviewdetails =  await tx.review.findFirst({
+            where: {
+                customerId: userId,
+                rentalOrderId,
+                gearItemId: item.gearItemId,
+                rating,
+                comment
+            }
+        })
+
+        if(reviewdetails){
+            throw new Error("User has already reviewed this rental order item");
+        }
+        await tx.review.create({
+            data: {
+                customerId: userId,
+                rentalOrderId,
+                gearItemId: item.gearItemId,
+                rating,
+                comment,
+            },
+        });
+    }
+
+    const review = await tx.review.findMany({
         where: {
             rentalOrderId: rentalOrderId,
             customerId: userId
         },
-    });
-
-    if (existingReview) {
-        throw new Error("User has already reviewed this rental order");
-    }
-
-    const review = await prisma.review.create({
-        data: {
-            customerId: userId,
-            rentalOrderId,
-            gearItemId: rentalOrder.rentalOrderItems[0]?.gearItemId!,
-            rating,
-            comment,
-        },
-    });
+    }); 
 
     return review;
+
+   })
+   
 };
 
 const updateReviewInDb = async (userId: string, reviewId: string, rating: number, comment: string, role: string) => {
@@ -90,8 +121,22 @@ const deleteReviewInDb = async (userId: string, reviewId: string, role: string) 
 
     return { message: "Review deleted successfully" };
 };
+const getReviewsByGearItemIdInDb = async (gearitemId: string) => {
+    const reviews = await prisma.review.findMany({
+        where: { gearItemId: gearitemId },
+    });
+
+    if (!reviews) {
+        throw new Error("No reviews found for this gear item");
+    }
+    
+    const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+    return { reviews, averageRating };
+};
+
 export const reviewService = {
     createReview: createReviewInDb,
     updateReview: updateReviewInDb,
-    deleteReview: deleteReviewInDb
+    deleteReview: deleteReviewInDb,
+    getReviewsByGearItemId: getReviewsByGearItemIdInDb
 };
