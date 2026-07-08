@@ -98,7 +98,9 @@ const returnRentalOrder = asyncHandler(async (req: Request, res: Response, next:
     });
 });
 
-
+const cancelRentalOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+     
+})
 export const rentalOrderController = {
     createRentalOrder,
     getRentalOrders,
@@ -106,6 +108,7 @@ export const rentalOrderController = {
     deleteRentalOrder,
     confirmRentalOrder,
     pickupRentalOrder,
-    returnRentalOrder
+    returnRentalOrder,
+    cancelRentalOrder
 };  
    

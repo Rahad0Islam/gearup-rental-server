@@ -398,6 +398,44 @@ const returnRentalOrderInDb = async (rentalOrderId: string, role: string) => {
  
 }
 
+
+const cancelRentalOrderInDb = async(rentalOrderId: string)=>{
+   
+  return await prisma.$transaction(async (tx) => {
+     const rentalOrder = await tx.rentalOrder.findUniqueOrThrow({
+    where: { id: rentalOrderId },
+    include: {
+      rentalOrderItems: true,
+    },
+  });
+
+  // Restore stock for each gear item in the order
+  for (const item of rentalOrder.rentalOrderItems) {
+    await tx.gearItems.update({
+      where: { id: item.gearItemId },
+      data: {
+        availableStock: {
+          increment: item.quantity,
+        },
+      },
+    });
+  }
+
+ 
+
+  await tx.rentalOrder.update({
+    where: { id: rentalOrderId },
+    data:{
+      status:rentalOrderStatus.CANCELLED
+    }
+  });
+
+  return { message: "Rental order cancelled successfully." };
+
+  });
+
+
+}
 export const rentalOrderService = {
   createRentalOrderInDb,
   getRentalOrdersFromDb,
@@ -405,6 +443,7 @@ export const rentalOrderService = {
   deleteRentalOrderFromDb,
   confirmRentalOrderInDb,
   pickupRentalOrderInDb,
-  returnRentalOrderInDb
+  returnRentalOrderInDb,
+  cancelRentalOrderInDb
 };
 

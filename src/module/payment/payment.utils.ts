@@ -65,7 +65,7 @@ export const rentalPaymentSession = async(userId: string, rentalOrderId: string)
         // }
 
         
-        if(rentalOrder.status !== rentalOrderStatus.CONFIRMED){
+        if(rentalOrder.status !== rentalOrderStatus.CONFIRMED ){
             throw new Error("Checkout session can only be created for rental orders with status 'CONFIRMED'.");
         }
 
@@ -279,3 +279,44 @@ export const sessionCompletedLateFee = async(session: Stripe.Checkout.Session)=>
     console.log(`Payment record updated to PAID for checkout session ID: ${checkoutSessionId}`);
 }
 
+
+
+export const sessionfailed = async(session: Stripe.Checkout.Session)=>{
+    const checkoutSessionId = session.id;
+
+    const paymentRecord = await prisma.payments.findUnique({
+        where: {
+            checkOutSessionId: checkoutSessionId,
+        },
+    });
+
+    if (!paymentRecord) {
+        console.error(`Payment record not found for checkout session ID: ${checkoutSessionId}`);
+        return;
+    }
+    await prisma.$transaction(async (tx) => {
+
+         await tx.payments.update({
+        where: {
+            id: paymentRecord.id,
+        },
+        data: {
+            status: paymentStatus.FAILED,
+            paymentDate: new Date(),
+           
+        },
+    });
+
+    await tx.rentalOrder.update({
+        where: {
+            id: paymentRecord.rentalOrderId,
+        },
+        data: {
+            status:rentalOrderStatus.CONFIRMED,
+        },
+    });
+    })
+  
+
+    console.log(`Payment record updated to FAILED for checkout session ID: ${checkoutSessionId}`);
+}

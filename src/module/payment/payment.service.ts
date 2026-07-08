@@ -3,10 +3,10 @@ import config from "../../config/config";
 import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
 import Stripe from "stripe";
-import { lateFeePaymentSession, rentalPaymentSession, sessionCompleted, sessionCompletedLateFee } from "./payment.utils";
+import { lateFeePaymentSession, rentalPaymentSession, sessionCompleted, sessionCompletedLateFee, sessionfailed } from "./payment.utils";
 
 const createCheckoutSession = async (userId: string, rentalOrderId: string, paymentTypes: string) => {
-     
+      
       if(paymentTypes === paymentType.RENTAL){
         return await rentalPaymentSession(userId, rentalOrderId);
       }
@@ -35,7 +35,16 @@ const handleStripeWebhook = async (payload: Buffer, signature: string) => {
           const session = event.data.object as Stripe.Checkout.Session;
           await sessionCompleted(session);
 
-          console.log(`Checkout session completed: ${session.id}`);
+          // console.log(`Checkout session completed: ${session.id}`);
+          break;
+          case 'checkout.session.expired':
+          const expiredSession = event.data.object as Stripe.Checkout.Session;
+          await sessionfailed(expiredSession);
+          break;
+
+          case 'checkout.session.async_payment_failed':
+          const failedSession = event.data.object as Stripe.Checkout.Session;
+          await sessionfailed(failedSession);
           break;
 
         default:
@@ -49,6 +58,15 @@ const handleStripeWebhook = async (payload: Buffer, signature: string) => {
           await sessionCompletedLateFee(session);
 
           console.log(`Checkout session completed: ${session.id}`);
+          break;
+           case 'checkout.session.expired':
+          const expiredSession = event.data.object as Stripe.Checkout.Session;
+          await sessionfailed(expiredSession);
+          break;
+
+          case 'checkout.session.async_payment_failed':
+          const failedSession = event.data.object as Stripe.Checkout.Session;
+          await sessionfailed(failedSession);
           break;
 
         default:
