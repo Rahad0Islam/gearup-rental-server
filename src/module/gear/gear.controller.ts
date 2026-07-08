@@ -57,7 +57,8 @@ const getGearById = asyncHandler(async (req: Request, res: Response, next: NextF
 });
 
 const getAllGears = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const gears = await gearService.getAllGears();
+  const query = req.query;
+  const gears = await gearService.getAllGears(query);
 
   return sendResponse(res, {
     success: true,

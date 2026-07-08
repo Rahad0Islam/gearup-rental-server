@@ -4,6 +4,8 @@ import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
 import Stripe from "stripe";
 import { lateFeePaymentSession, rentalPaymentSession, sessionCompleted, sessionCompletedLateFee, sessionfailed } from "./payment.utils";
+import { IpaymentQuery } from "./payment.interface";
+import { paymentsWhereInput } from "../../../generated/prisma/models";
 
 const createCheckoutSession = async (userId: string, rentalOrderId: string, paymentTypes: string) => {
       const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
@@ -95,13 +97,64 @@ const handleStripeWebhook = async (payload: Buffer, signature: string) => {
 };
 
 
-const getPaymentHistory = async (userId: string, role: string) => {
+const getPaymentHistory = async (userId: string, role: string, query: IpaymentQuery) => {
+    
+   const limit = query.limit ? Number(query.limit) : 10;
+          const page = query.page ? Number(query.page) : 1;
+          const skip = (page - 1) * limit;
+          const sortBy = query.sortBy ? query.sortBy : "createdAt";
+          const sortOrder = query.sortOrder ? query.sortOrder : "desc";
+      
+           const andCondition : paymentsWhereInput[] = [];
+      
+          
+  
+      
+      
+          if(query.status){
+              andCondition.push({
+                  status:query.status
+              })
+          }
+           
+           if(query.id){
+              andCondition.push({
+                  id:query.id
+              })
+          }
+  
+       
+         
+        if(query.paymentType){
+            andCondition.push({
+                paymentType:query.paymentType
+            })
+        }
+
+        if(query.paymentMethod){
+            andCondition.push({
+                paymentMethod:query.paymentMethod
+            })
+        }
+
+        
+
   let paymentHistory;
   if (role === Role.CUSTOMER) {
-    paymentHistory = await prisma.payments.findMany({
+      andCondition.push({customerId: userId});
+      
+      paymentHistory = await prisma.payments.findMany({
+
       where: {
-        customerId: userId
+        AND: andCondition
       },
+
+       take:limit,
+        skip:skip,
+        orderBy:{
+            [sortBy]:sortOrder
+        },
+
           omit:{
             checkoutUrl:true,
           }
@@ -109,6 +162,14 @@ const getPaymentHistory = async (userId: string, role: string) => {
   }
   else if (role === Role.ADMIN) {
     paymentHistory = await prisma.payments.findMany({
+      where: {
+        AND: andCondition
+      },
+       take:limit,
+      skip:skip,
+      orderBy:{
+          [sortBy]:sortOrder
+      },
        omit:{
             checkoutUrl:true,
           }

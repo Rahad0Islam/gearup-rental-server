@@ -1,5 +1,6 @@
+import { gearItemsWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
-import { Igear } from "./gear.interface";
+import { Igear, IgearSearchQuery } from "./gear.interface";
 
 const addGearToDb = async (gearData: Igear,categoryId: string,providerId: string) => {
   const { name, description, rentPricePerDay, discountPrice, stock, availableStock, status, image } = gearData;
@@ -66,8 +67,81 @@ const getGearById = async (id: string) => {
   return gear;
 }
 
-const getAllGears = async () => {
-  const gears = await prisma.gearItems.findMany();
+const getAllGears = async (query: IgearSearchQuery) => {
+   const limit = query.limit ? Number(query.limit) : 10;
+           const page = query.page ? Number(query.page) : 1;
+           const skip = (page - 1) * limit;
+           const sortBy = query.sortBy ? query.sortBy : "createdAt";
+           const sortOrder = query.sortOrder ? query.sortOrder : "desc";
+       
+            const andCondition : gearItemsWhereInput[] = [];
+       
+           if(query.searchTerm){
+           andCondition.push({
+           OR:[
+               {
+                   name:{
+                       contains:query.searchTerm,
+                       mode:"insensitive"
+                   }
+               },
+               {
+                   description:{
+                       contains:query.searchTerm,
+                       mode:"insensitive"
+                   }
+               }
+           ]
+       })
+       }
+   
+       
+       
+           if(query.name){
+               andCondition.push({
+                   name:query.name
+               })
+           }
+            if(query.description){
+               andCondition.push({
+                   description:query.description
+               })
+           }
+            if(query.id){
+               andCondition.push({
+                   id:query.id
+               })
+           }
+
+           if(query.status){
+            andCondition.push({
+                status:query.status
+            })
+        }
+
+        if(query.rentPricePerDay){
+            //create a range for rentPricePerDay 0 to query.rentPricePerDay
+            andCondition.push({
+                rentPricePerDay:{
+                    lte: Number(query.rentPricePerDay)
+                }
+            })
+        }
+            
+       
+          
+   
+  
+  const gears = await prisma.gearItems.findMany({
+     where:{
+        AND:andCondition
+    },
+    take:limit,
+    skip:skip,
+    orderBy:{
+        [sortBy]:sortOrder
+    },
+  });
   return gears;
 }
 

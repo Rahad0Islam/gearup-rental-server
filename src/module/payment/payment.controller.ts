@@ -55,7 +55,8 @@ const handleStripeWebhook = asyncHandler(async (req: Request, res: Response, nex
 const getPaymentHistory = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     const role = req.user?.role;
-    const paymentHistory = await paymentService.getPaymentHistory(userId as string,role as string);
+    const queryParams = req.query;
+    const paymentHistory = await paymentService.getPaymentHistory(userId as string,role as string,queryParams);
 
     return sendResponse(res, {
         success: true,
