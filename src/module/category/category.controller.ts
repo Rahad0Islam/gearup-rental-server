@@ -55,7 +55,9 @@ const getCategoryById = asyncHandler(async (req: Request, res: Response, next: N
 });
 
 const getAllCategories = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const categories = await categoryService.getAllCategories();
+  const queryParams = req.query;
+
+  const categories = await categoryService.getAllCategories(queryParams);
 
   return sendResponse(res, {
     success: true,
