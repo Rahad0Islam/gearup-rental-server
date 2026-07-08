@@ -55,7 +55,31 @@ const updateReview = asyncHandler(async (req: Request, res: Response) => {
     });
 });
 
+const deleteReview = asyncHandler(async (req: Request, res: Response) => {
+    const { reviewId } = req.params;
+    const userId = req.user?.id;
+    const role = req.user?.role;
+
+    if (!reviewId) {
+        return sendResponse(res, {
+            success: false,
+            statuscode: httpStatus.BAD_REQUEST,
+            message: "reviewId is required",
+            data: null
+        });
+    }
+
+    await reviewService.deleteReview(userId as string, reviewId as string, role as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Review deleted successfully",
+        data: null
+    });
+});
 export const reviewController = {
     createReview,
-    updateReview
+    updateReview,
+    deleteReview
 }

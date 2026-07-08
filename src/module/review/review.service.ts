@@ -71,7 +71,27 @@ const updateReviewInDb = async (userId: string, reviewId: string, rating: number
     return updatedReview;
 }
 
+const deleteReviewInDb = async (userId: string, reviewId: string, role: string) => {
+    const review = await prisma.review.findUnique({
+        where: { id: reviewId },
+    });
+
+    if (!review) {
+        throw new Error("Review not found");
+    }
+
+    if(role === Role.PROVIDER){
+        throw new Error("User is not authorized to delete this review");
+    }
+
+    await prisma.review.delete({
+        where: { id: reviewId },
+    });
+
+    return { message: "Review deleted successfully" };
+};
 export const reviewService = {
     createReview: createReviewInDb,
-    updateReview: updateReviewInDb 
+    updateReview: updateReviewInDb,
+    deleteReview: deleteReviewInDb
 };
