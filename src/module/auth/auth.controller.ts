@@ -48,20 +48,50 @@ const login = asyncHandler(async (req: Request, res: Response,next:NextFunction)
     });
 });
 
-// const me = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
-//     const userId = req.user?.id;
-//     const user = await authService.meFromDb(userId!);
+const refreshAccessToken = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken){
+        return sendResponse(res,{
+            success: false,
+            statuscode: httpStatus.UNAUTHORIZED,
+            message: "Refresh token is missing",
+            data: null
+        });
+    }
 
-//     return sendResponse(res, {
-//         success: true,
-//         statuscode: httpStatus.OK,
-//         message: "User fetched successfully",
-//         data: user,
-//     });
-// });
+    const newAccessToken = await authService.refreshToken(refreshToken);
+      res.cookie("accessToken",newAccessToken,{
+         httpOnly:true,
+         secure:false,
+         sameSite:"none",
+         maxAge:1000* 60 * 60 * 24 
+       })
+
+
+    return sendResponse(res,{
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Access token refreshed successfully",
+        data: {
+            accessToken:newAccessToken
+        }
+    });
+});
+const me = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
+    const userId = req.user?.id;
+    const user = await authService.meFromDb(userId!);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "User fetched successfully",
+        data: user,
+    });
+});
 
 export const authController = {
   registerUser,
   login,
-//   me,
+  refreshAccessToken,
+  me,
 };

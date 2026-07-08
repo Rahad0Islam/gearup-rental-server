@@ -235,7 +235,11 @@ const getRentalOrderByIdFromDb = async (rentalOrderId: string, userId: string, u
 
 }
 
-const deleteRentalOrderFromDb = async (rentalOrderId: string) => {
+const deleteRentalOrderFromDb = async (rentalOrderId: string,role:string) => {
+   
+  if(role !== Role.ADMIN){
+    throw new Error("Only ADMIN can delete the rental order.");
+  }
 
   return await prisma.$transaction(async (tx) => {
      const rentalOrder = await tx.rentalOrder.findUniqueOrThrow({
@@ -280,7 +284,7 @@ const confirmRentalOrderInDb = async (rentalOrderId: string) => {
   });
 
   if(rentalOrder.status !== rentalOrderStatus.PLACED){
-    throw new Error("Only rental orders with status 'PENDING' can be confirmed.");
+    throw new Error("Only rental orders with status 'PLACED' can be confirmed.");
   }
 
   return await prisma.rentalOrder.update({
@@ -399,8 +403,9 @@ const returnRentalOrderInDb = async (rentalOrderId: string, role: string) => {
 }
 
 
-const cancelRentalOrderInDb = async(rentalOrderId: string)=>{
+const cancelRentalOrderInDb = async(rentalOrderId: string,role: string,userId: string)=>{
    
+
   return await prisma.$transaction(async (tx) => {
      const rentalOrder = await tx.rentalOrder.findUniqueOrThrow({
     where: { id: rentalOrderId },
@@ -408,7 +413,18 @@ const cancelRentalOrderInDb = async(rentalOrderId: string)=>{
       rentalOrderItems: true,
     },
   });
+  
+   if(role === Role.CUSTOMER && rentalOrder.customerId !== userId){
+    throw new Error("You do not have permission to cancel this rental order.");
+  }
 
+  if(role === Role.PROVIDER){
+    throw new Error("Only ADMIN or CUSTOMER can cancel the rental order.");
+  }
+  
+  if(rentalOrder.status === rentalOrderStatus.CANCELLED){
+    throw new Error("This rental order has already been cancelled.");
+  } 
   // Restore stock for each gear item in the order
   for (const item of rentalOrder.rentalOrderItems) {
     await tx.gearItems.update({

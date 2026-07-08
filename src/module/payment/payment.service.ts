@@ -6,7 +6,24 @@ import Stripe from "stripe";
 import { lateFeePaymentSession, rentalPaymentSession, sessionCompleted, sessionCompletedLateFee, sessionfailed } from "./payment.utils";
 
 const createCheckoutSession = async (userId: string, rentalOrderId: string, paymentTypes: string) => {
-      
+      const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
+        where: { id: rentalOrderId },
+        include: {
+          rentalOrderItems: {
+            include: {
+              gearItem: true,
+            },
+          },
+        },
+      });
+
+      if (!rentalOrder) {
+        throw new Error("Rental order not found");
+      }
+
+      if (rentalOrder.customerId !== userId) {
+        throw new Error("You are not authorized to make a payment for this rental order");
+      }
       if(paymentTypes === paymentType.RENTAL){
         return await rentalPaymentSession(userId, rentalOrderId);
       }

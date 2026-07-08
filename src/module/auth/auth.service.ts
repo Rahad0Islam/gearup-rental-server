@@ -1,4 +1,4 @@
-import { SignOptions } from "jsonwebtoken";
+import { JwtPayload, SignOptions } from "jsonwebtoken";
 import { ActiveStatus, Role } from "../../../generated/prisma/client";
 import config from "../../config/config";
 import { prisma } from "../../lib/prisma";
@@ -97,6 +97,38 @@ const loginIntoDb = async (userData: Ilogin) => {
  
 };
 
+const refreshToken = async(payload:string)=>{
+      
+    
+     const verifiedToken = jwtUtils.verifyToken(payload,config.jwt_refresh_secret);
+
+     if(!verifiedToken.success){
+        throw new Error(verifiedToken.error);
+     }
+
+     const {id} = verifiedToken.data as JwtPayload;
+
+     const user = await prisma.user.findUniqueOrThrow({
+        where:{id}
+     });
+
+     if(user.activeStatus === ActiveStatus.SUSPENDED){
+        throw new Error("user is suspended. Please contact support for assistance.");
+     }
+
+      const jwtPayload : IjwtPayload= {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    activeStatus: user.activeStatus,
+
+  };
+
+     const accessToken = jwtUtils.token(jwtPayload,config.jwt_access_secret,config.jwt_access_expires_in as SignOptions);
+     return accessToken
+
+}
 const meFromDb = async (userId: string) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
@@ -113,5 +145,6 @@ const meFromDb = async (userId: string) => {
 export const authService = {
     registerIntoDb,
     loginIntoDb,
+    refreshToken,
     meFromDb
 }
