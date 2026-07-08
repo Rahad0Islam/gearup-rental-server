@@ -29,16 +29,35 @@ const addGearToDb = async (gearData: Igear,categoryId: string,providerId: string
 };
 
 const updateGearInDb = async (id: string, gearData: Partial<Igear>) => {
+
+  const {stock} = gearData;
+
+
   const existingGear = await prisma.gearItems.findUnique({
     where: { id },
   });
   if (!existingGear) {
     throw new Error("Gear not found");
   }
+
+  let availableStock = existingGear.availableStock;
+  if (stock) {
+    const stockDifference = stock - existingGear.stock;
+    availableStock = (availableStock || 0) + stockDifference;
+    if (availableStock < 0) {
+      throw new Error("Available stock cannot be negative");
+    }
+  }
+
+  const updatedGearData: Partial<Igear> = {
+    ...gearData,
+    availableStock,
+  };
+
   const updatedGear = await prisma.gearItems.update({
     where: { id },
     data: {
-      ...gearData,
+      ...updatedGearData,
     }
   });
   return updatedGear;
