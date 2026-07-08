@@ -112,6 +112,20 @@ const cancelRentalOrder = asyncHandler(async (req: Request, res: Response, next:
          data: updatedRentalOrder
      });
 })
+
+const getRentalOrderStatus = asyncHandler(async (req: Request, res: Response, next: NextFunction) => { 
+
+    const { rentalOrderId } = req.params;
+    const rentalOrderStatus = await rentalOrderService.getRentalOrderStatusFromDb(rentalOrderId as string, req.user?.id as string, req.user?.role as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Rental order status fetched successfully",
+        data: rentalOrderStatus
+    });
+})
+
 export const rentalOrderController = {
     createRentalOrder,
     getRentalOrders,
@@ -120,6 +134,7 @@ export const rentalOrderController = {
     confirmRentalOrder,
     pickupRentalOrder,
     returnRentalOrder,
-    cancelRentalOrder
+    cancelRentalOrder,
+    getRentalOrderStatus
 };  
    

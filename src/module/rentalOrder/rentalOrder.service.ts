@@ -452,6 +452,38 @@ const cancelRentalOrderInDb = async(rentalOrderId: string,role: string,userId: s
 
 
 }
+
+
+const getRentalOrderStatusFromDb = async (rentalOrderId: string, userId: string, userRole: string) => {
+
+  const rentalOrder = await prisma.rentalOrder.findUniqueOrThrow({
+    where: { id: rentalOrderId },
+    
+  });
+  
+  if(userRole === Role.ADMIN){
+    return rentalOrder.status;
+  } 
+  if(userRole === Role.PROVIDER){
+    const rentalOrderItem = await prisma.rentalOrderItems.findFirstOrThrow({
+      where: { rentalOrderId },
+    });
+    const gearItem = await prisma.gearItems.findUniqueOrThrow({
+      where: { id: rentalOrderItem.gearItemId },
+    });
+    if(gearItem.providerId !== userId){
+      throw new Error("You do not have permission to view this rental order status.");
+    }
+    return rentalOrder.status;
+  }
+  
+  if(rentalOrder.customerId !== userId){
+    throw new Error("You do not have permission to view this rental order status.");
+  }
+
+  return rentalOrder.status;
+  
+} 
 export const rentalOrderService = {
   createRentalOrderInDb,
   getRentalOrdersFromDb,
@@ -460,6 +492,7 @@ export const rentalOrderService = {
   confirmRentalOrderInDb,
   pickupRentalOrderInDb,
   returnRentalOrderInDb,
-  cancelRentalOrderInDb
+  cancelRentalOrderInDb,
+  getRentalOrderStatusFromDb
 };
 

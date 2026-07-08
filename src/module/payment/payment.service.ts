@@ -1,4 +1,4 @@
-import { paymentMethod, paymentStatus, paymentType, rentalOrderStatus } from "../../../generated/prisma/enums";
+import { paymentMethod, paymentStatus, paymentType, rentalOrderStatus, Role } from "../../../generated/prisma/enums";
 import config from "../../config/config";
 import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
@@ -94,7 +94,31 @@ const handleStripeWebhook = async (payload: Buffer, signature: string) => {
     
 };
 
+
+const getPaymentHistory = async (userId: string, role: string) => {
+  let paymentHistory;
+  if (role === Role.CUSTOMER) {
+    paymentHistory = await prisma.payments.findMany({
+      where: {
+        customerId: userId
+      },
+          omit:{
+            checkoutUrl:true,
+          }
+    });
+  }
+  else if (role === Role.ADMIN) {
+    paymentHistory = await prisma.payments.findMany({
+       omit:{
+            checkoutUrl:true,
+          }
+    });
+  }
+  return paymentHistory;
+};
+
 export const paymentService = {
     createCheckoutSession,
-    handleStripeWebhook
+    handleStripeWebhook,
+    getPaymentHistory
 }

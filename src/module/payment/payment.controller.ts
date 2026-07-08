@@ -51,7 +51,21 @@ const handleStripeWebhook = asyncHandler(async (req: Request, res: Response, nex
     }); 
 });
 
+
+const getPaymentHistory = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user?.id;
+    const role = req.user?.role;
+    const paymentHistory = await paymentService.getPaymentHistory(userId as string,role as string);
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Payment history fetched successfully",
+        data: paymentHistory
+    });
+});
 export const paymentController = {
     createCheckoutSession,
-    handleStripeWebhook
+    handleStripeWebhook,
+    getPaymentHistory
 }

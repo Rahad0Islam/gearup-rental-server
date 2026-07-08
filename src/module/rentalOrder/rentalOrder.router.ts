@@ -14,6 +14,6 @@ router.patch('/confirm/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER), rentalOrd
 router.patch('/cancel/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER,Role.CUSTOMER), rentalOrderController.cancelRentalOrder);
 router.patch('/pickup/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER), rentalOrderController.pickupRentalOrder);
 router.patch('/return/:rentalOrderId',auth(Role.ADMIN,Role.PROVIDER), rentalOrderController.returnRentalOrder);
-
+router.get('/orderStatus/:rentalOrderId',auth(Role.CUSTOMER,Role.ADMIN,Role.PROVIDER), rentalOrderController.getRentalOrderStatus);
 
 export const rentalOrderRouter = router;
