@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-  res.send("Hello World!");
+  res.send("rental service is running");
 });
 
 

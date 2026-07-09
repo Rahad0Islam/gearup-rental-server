@@ -29,7 +29,6 @@ const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: s
     (returned.getTime() - pickup.getTime()) / (1000 * 60 * 60 * 24),
   );
 
-  // Validate quantity first
   for (const item of gearItems) {
     if (item.quantity <= 0) {
       throw new Error("Quantity must be greater than 0.");
@@ -37,7 +36,7 @@ const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: s
   }
 
   return await prisma.$transaction(async (tx) => {
-    // Fetch all gear in one query
+
     const gearIds = gearItems.map((item) => item.gearItemId);
     // console.log({gearItems})
 

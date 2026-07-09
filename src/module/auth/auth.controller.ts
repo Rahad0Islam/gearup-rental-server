@@ -89,9 +89,21 @@ const me = asyncHandler(async (req: Request, res: Response,next:NextFunction) =>
     });
 });
 
+const logout = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "User logged out successfully",
+        data: null,
+    });
+});
 export const authController = {
   registerUser,
   login,
   refreshAccessToken,
   me,
-};
+  logout
+};  
