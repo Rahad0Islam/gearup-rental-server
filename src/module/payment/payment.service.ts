@@ -160,7 +160,7 @@ const getPaymentHistory = async (userId: string, role: string, query: IpaymentQu
           }
     });
   }
-  else if (role === Role.ADMIN) {
+  else if (role === Role.ADMIN || role === Role.PROVIDER) {
     paymentHistory = await prisma.payments.findMany({
       where: {
         AND: andCondition
