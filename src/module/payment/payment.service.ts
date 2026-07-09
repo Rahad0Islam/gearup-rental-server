@@ -136,6 +136,16 @@ const getPaymentHistory = async (userId: string, role: string, query: IpaymentQu
                 paymentMethod:query.paymentMethod
             })
         }
+        if(query.rentalOrderId){
+            andCondition.push({
+                rentalOrderId:query.rentalOrderId
+            })
+        }
+        if(query.customerId){
+            andCondition.push({
+                customerId:query.customerId
+            })
+        }
 
         
 
