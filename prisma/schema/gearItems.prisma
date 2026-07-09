@@ -5,6 +5,7 @@ model gearItems {
   rentPricePerDay Float 
   discountPrice Float?
   stock       Int
+  brand       String?  @db.VarChar(255)
   availableStock   Int
   status      gearItemStatus @default(AVAILABLE)
   image       String?  @db.VarChar(255)

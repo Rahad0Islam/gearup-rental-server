@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma";
 import { Igear, IgearSearchQuery } from "./gear.interface";
 
 const addGearToDb = async (gearData: Igear,categoryId: string,providerId: string) => {
-  const { name, description, rentPricePerDay, discountPrice, stock, availableStock, status, image } = gearData;
+  const { name, description, rentPricePerDay, discountPrice, stock, status, image, brand } = gearData;
   const existingCategory = await prisma.categories.findUnique({
     where: { id: categoryId },
   });
@@ -20,6 +20,7 @@ const addGearToDb = async (gearData: Igear,categoryId: string,providerId: string
       availableStock:stock,
       status,
       image,
+      brand,
       categoryId,
       providerId 
     }
@@ -144,6 +145,12 @@ const getAllGears = async (query: IgearSearchQuery) => {
                 rentPricePerDay:{
                     lte: Number(query.rentPricePerDay)
                 }
+            })
+        }
+
+        if(query.brand){
+            andCondition.push({
+                brand:query.brand
             })
         }
             

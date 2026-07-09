@@ -10,6 +10,7 @@ export interface Igear {
   availableStock?: number;
   status?: gearItemStatus;
   image?: string;
+  brand?: string;
 }
 
 
