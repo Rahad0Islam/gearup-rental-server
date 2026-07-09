@@ -14,9 +14,9 @@ model gearItems {
   updatedAt   DateTime @updatedAt
 
   categoryId  String
-  category    categories @relation(fields: [categoryId], references: [id])
+  category    categories @relation(fields: [categoryId], references: [id],onDelete: Cascade)
   providerId  String
-  provider    User      @relation(fields: [providerId], references: [id])
+  provider    User      @relation(fields: [providerId], references: [id],onDelete: Cascade)
   
   rentalOrderItems rentalOrderItems[]
   reviews review[]

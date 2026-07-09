@@ -114,7 +114,15 @@ const getAllCategories = async (query:IcategorySearchQuery) => {
             [sortBy]:sortOrder
         },
     });
-    return categories;
+     return {
+        data:categories,
+        meta:{
+            page,
+            limit,
+            total:categories.length,
+            totalPage:Math.ceil(categories.length / limit)
+        }
+    };
 };
 
 export const categoryService = {

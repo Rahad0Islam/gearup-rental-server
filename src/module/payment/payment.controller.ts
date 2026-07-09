@@ -62,7 +62,8 @@ const getPaymentHistory = asyncHandler(async (req: Request, res: Response, next:
         success: true,
         statuscode: httpStatus.OK,
         message: "Payment history fetched successfully",
-        data: paymentHistory
+        data: paymentHistory.data,
+        meta: paymentHistory.meta
     });
 });
 export const paymentController = {

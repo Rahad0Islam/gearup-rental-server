@@ -12,10 +12,10 @@ model payments {
   updatedAt   DateTime @updatedAt
 
   rentalOrderId String 
-  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id])
+  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id],onDelete: Cascade)
 
   customerId String
-  customer   User @relation(fields: [customerId], references: [id])
+  customer   User @relation(fields: [customerId], references: [id],onDelete: Cascade)
 
   @@map("payments")
 }

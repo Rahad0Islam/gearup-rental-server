@@ -139,7 +139,7 @@ const getPaymentHistory = async (userId: string, role: string, query: IpaymentQu
 
         
 
-  let paymentHistory;
+  let paymentHistory: IpaymentQuery[] = [];
   if (role === Role.CUSTOMER) {
       andCondition.push({customerId: userId});
       
@@ -175,7 +175,15 @@ const getPaymentHistory = async (userId: string, role: string, query: IpaymentQu
           }
     });
   }
-  return paymentHistory;
+   return {
+        data:paymentHistory,
+        meta:{
+            page,
+            limit,
+            total:paymentHistory.length,
+            totalPage:Math.ceil(paymentHistory.length / limit)
+        }
+    };
 };
 
 export const paymentService = {

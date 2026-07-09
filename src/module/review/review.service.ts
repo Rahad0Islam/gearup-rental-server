@@ -134,9 +134,34 @@ const getReviewsByGearItemIdInDb = async (gearitemId: string) => {
     return { reviews, averageRating };
 };
 
+const getAllReviewsInDb = async () => {
+     //group by gearItemId and get average rating for each gear item and return gearitem details not only id
+    const reviews = await prisma.review.groupBy({
+        by: ['gearItemId'],
+        _avg: {
+            rating: true,
+        },
+    });
+
+    const reviewsWithGearItemDetails = await Promise.all(reviews.map(async (review) => {
+        const gearItem = await prisma.gearItems.findUnique({
+            where: { id: review.gearItemId },
+        });
+        return {
+            gearItem,
+            averageRating: review._avg.rating,
+        };
+    }));
+
+    return reviewsWithGearItemDetails;
+};
+
+
+
 export const reviewService = {
     createReview: createReviewInDb,
     updateReview: updateReviewInDb,
     deleteReview: deleteReviewInDb,
-    getReviewsByGearItemId: getReviewsByGearItemIdInDb
+    getReviewsByGearItemId: getReviewsByGearItemIdInDb,
+    getAllReviews: getAllReviewsInDb
 };

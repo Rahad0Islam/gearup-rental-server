@@ -1,6 +1,6 @@
 import { rentalOrderStatus, Role } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-import { IrentalOrder } from "./rentalOrder.interface";
+import { IrentalOrder, IrentalOrderQuery } from "./rentalOrder.interface";
 
 const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: string,) => {
   const { pickupDate, returnDate, items:gearItems } = rentalOrderData;
@@ -16,10 +16,10 @@ const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: s
 
   const pickup = new Date(pickupDate);
   const returned = new Date(returnDate);
-
-   if(pickup < new Date()) {
-    throw new Error("Pickup date cannot be in the past.");
-  }
+  
+  //  if(pickup < new Date()) {
+  //   throw new Error("Pickup date cannot be in the past.");
+  // }
 
   if (pickup >= returned) {
     throw new Error("Return date must be after pickup date.");
@@ -147,8 +147,39 @@ const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: s
 };
 
 
-const getRentalOrdersFromDb = async (userId: string, userRole: string) => {
+const getRentalOrdersFromDb = async (userId: string, userRole: string,query:IrentalOrderQuery) => {
      // ADMIN can see all orders, CUSTOMER can see their own orders, PROVIDER can see orders for their gear
+      
+        const limit = query.limit ? Number(query.limit) : 10;
+               const page = query.page ? Number(query.page) : 1;
+               const skip = (page - 1) * limit;
+               const sortBy = query.sortBy ? query.sortBy : "createdAt";
+               const sortOrder = query.sortOrder ? query.sortOrder : "desc";
+           
+                const andCondition : IrentalOrderQuery[] = [];
+           
+               
+       
+           
+           
+               if(query.status){
+                   andCondition.push({
+                       status:query.status
+                   })
+               }
+                
+                if(query.pickupDate){
+                   andCondition.push({
+                       pickupDate:query.pickupDate  
+                   })
+               }
+
+               if(query.returnDate){
+                andCondition.push({
+                    returnDate:query.returnDate  
+                })
+            }
+       
   let whereClause = {};
 
   if (userRole === Role.CUSTOMER) {
@@ -169,15 +200,26 @@ const getRentalOrdersFromDb = async (userId: string, userRole: string) => {
       },
     };
   }
+   
 
-  return await prisma.rentalOrder.findMany({
-    where: whereClause,
+  andCondition.push(whereClause);
+
+  const rentalorders =  await prisma.rentalOrder.findMany({
+    where: {
+      AND: andCondition,
+    },
+     take:limit,
+        skip:skip,
+        orderBy:{
+            [sortBy]:sortOrder
+        },
     include: {
       rentalOrderItems: {
         include: {
           gearItem: true,
         },
       },
+
       customer: {
         select: {
           id: true,
@@ -186,7 +228,18 @@ const getRentalOrdersFromDb = async (userId: string, userRole: string) => {
         },
       },
     },
-  });
+  }
+  
+);
+     return {
+        data:rentalorders,
+        meta:{
+            page,
+            limit,
+            total:rentalorders.length,
+            totalPage:Math.ceil(rentalorders.length / limit)
+        }
+     }
 };
 
 
@@ -309,6 +362,25 @@ const pickupRentalOrderInDb = async (rentalOrderId: string, role: string) => {
   if(rentalOrder.returnDate < new Date()){
     throw new Error("Pickup date cannot be after the return date.");
   }
+  if(rentalOrder.pickupDate > new Date()){
+    throw new Error("Pickup date is later than the current date.");
+  }
+
+  if(rentalOrder.status === rentalOrderStatus.PICKED_UP){
+    throw new Error("This rental order has already been marked as 'PICKED_UP'.");
+  }
+
+  if(rentalOrder.status === rentalOrderStatus.RETURNED){
+    throw new Error("This rental order has already been marked as 'RETURNED'.");
+  }
+
+  if(rentalOrder.status === rentalOrderStatus.LATE_RETURN){
+    throw new Error("This rental order has already been marked as 'LATE_RETURN'.");
+  }
+
+  if(rentalOrder.status === rentalOrderStatus.CANCELLED){
+    throw new Error("This rental order has already been marked as 'CANCELLED'.");
+  }
   if(rentalOrder.status !== rentalOrderStatus.PAID){
      throw new Error("Only rental orders with status 'PAID' can be updated to 'PICKED_UP'.");
   }
@@ -405,6 +477,7 @@ const returnRentalOrderInDb = async (rentalOrderId: string, role: string) => {
 
 const cancelRentalOrderInDb = async(rentalOrderId: string,role: string,userId: string)=>{
    
+   console.log({rentalOrderId,role,userId})
 
   return await prisma.$transaction(async (tx) => {
      const rentalOrder = await tx.rentalOrder.findUniqueOrThrow({

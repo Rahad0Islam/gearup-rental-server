@@ -101,9 +101,23 @@ const getReviewsByGearItemId = asyncHandler(async (req: Request, res: Response) 
         data: reviews
     });
 });
+
+const getAllReviews = asyncHandler(async (req: Request, res: Response) => { 
+     const reviews = await reviewService.getAllReviews();
+
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "All reviews fetched successfully",
+        data: reviews
+    });
+})
+
+
 export const reviewController = {
     createReview,
     updateReview,
     deleteReview,
-    getReviewsByGearItemId
+    getReviewsByGearItemId,
+    getAllReviews
 }

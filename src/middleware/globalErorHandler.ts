@@ -7,6 +7,7 @@ export const globalerrorhandler = (err:any, req:Request, res:Response, next:Next
 let statusCode: number = httpStatus.INTERNAL_SERVER_ERROR;
 let errorMessage = err.message || "Internal Server Error";
 let errorName = err.name || "Error";
+//error details for deployment purpose
 let errorDetails = err.stack || "No additional details available";
 
 if(err instanceof Prisma.PrismaClientKnownRequestError  ){
@@ -50,6 +51,6 @@ return res.status(statusCode).json({
     message: errorMessage,
     name: errorName,
     errorCode: err.code || "No error code available",
-    error: errorDetails
+    // error: errorDetails
   });
 }

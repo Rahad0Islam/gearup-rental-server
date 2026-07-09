@@ -3,6 +3,7 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import { gearService } from "./gear.service";
+import { Role } from "../../../generated/prisma/client";
 
 
 const addGear = asyncHandler(async (req: Request, res: Response,next:NextFunction) => {
@@ -22,7 +23,9 @@ const addGear = asyncHandler(async (req: Request, res: Response,next:NextFunctio
 const updateGear = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   const gearData = req.body;
-  const updatedGear = await gearService.updateGearInDb(id as string, gearData);
+  const role = req.user?.role;
+  const providerId = req.user?.id;
+  const updatedGear = await gearService.updateGearInDb(id as string, gearData,role as Role, providerId as string);
 
   return sendResponse(res, {
     success: true,
@@ -64,7 +67,8 @@ const getAllGears = asyncHandler(async (req: Request, res: Response, next: NextF
     success: true,
     statuscode: httpStatus.OK,
     message: "Gears fetched successfully",
-    data: gears,
+    data: gears.data,
+    meta: gears.meta
   });
 });
 

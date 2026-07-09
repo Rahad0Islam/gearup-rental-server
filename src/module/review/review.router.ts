@@ -6,6 +6,7 @@ import { Role } from "../../../generated/prisma/client";
 const router = Router();
 
 router.post('/',auth(Role.CUSTOMER,Role.ADMIN), reviewController.createReview);
+router.get('/',reviewController.getAllReviews);
 router.patch('/:reviewId',auth(Role.CUSTOMER,Role.ADMIN), reviewController.updateReview);
 router.delete('/:reviewId',auth(Role.CUSTOMER,Role.ADMIN), reviewController.deleteReview);  
 router.get('/:gearitemid', reviewController.getReviewsByGearItemId);

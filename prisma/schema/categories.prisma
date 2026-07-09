@@ -7,7 +7,7 @@ model categories {
   updatedAt DateTime @updatedAt
 
   createdBy String  
-  user      User     @relation(fields: [createdBy], references: [id])
+  user      User     @relation(fields: [createdBy], references: [id],onDelete: Cascade)
   
   gearItems gearItems[]
 

@@ -63,7 +63,15 @@ const getAllUserFromDb = async(query: IuserSearchQuery)=>{
 
     });
 
-    return getAllUser;
+     return {
+        data:getAllUser,
+        meta:{
+            page,
+            limit,
+            total:getAllUser.length,
+            totalPage:Math.ceil(getAllUser.length / limit)
+        }
+    };
     
 }
 

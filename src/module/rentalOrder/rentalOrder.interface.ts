@@ -1,3 +1,5 @@
+import { RentalOrderWhereInput } from "../../../generated/prisma/models";
+
 export interface IrentalOrder {
   customerId: string;
   pickupDate: Date;
@@ -9,4 +11,14 @@ export interface IrentalOrder {
   }[];
   actualRentAmount: number;
   totalDiscount: number;
+}
+
+
+
+export interface IrentalOrderQuery extends RentalOrderWhereInput {
+  page?: string;
+  limit?: string;
+  sortBy?: string;
+  searchTerm?: string;
+  sortOrder?: 'asc' | 'desc';
 }

@@ -63,7 +63,8 @@ const getAllCategories = asyncHandler(async (req: Request, res: Response, next: 
     success: true,
     statuscode: httpStatus.OK,
     message: "Categories fetched successfully",
-    data: categories,
+    data: categories.data,
+    meta: categories.meta
   });
 });
 

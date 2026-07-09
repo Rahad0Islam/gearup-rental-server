@@ -1,3 +1,4 @@
+import { Role } from "../../../generated/prisma/client";
 import { gearItemsWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { Igear, IgearSearchQuery } from "./gear.interface";
@@ -29,7 +30,7 @@ const addGearToDb = async (gearData: Igear,categoryId: string,providerId: string
   return newGear;
 };
 
-const updateGearInDb = async (id: string, gearData: Partial<Igear>) => {
+const updateGearInDb = async (id: string, gearData: Partial<Igear>, role:Role,providerId:string) => {
 
   const {stock} = gearData;
 
@@ -39,6 +40,12 @@ const updateGearInDb = async (id: string, gearData: Partial<Igear>) => {
   });
   if (!existingGear) {
     throw new Error("Gear not found");
+  }
+  
+  if(role !== Role.ADMIN){
+      if(existingGear.providerId !== providerId){
+          throw new Error("You are not authorized to update this gear item");
+      }   
   }
 
   let availableStock = existingGear.availableStock;
@@ -168,7 +175,15 @@ const getAllGears = async (query: IgearSearchQuery) => {
         [sortBy]:sortOrder
     },
   });
-  return gears;
+   return {
+        data:gears,
+        meta:{
+            page,
+            limit,
+            total:gears.length,
+            totalPage:Math.ceil(gears.length / limit)
+        }
+    };
 }
 
 

@@ -14,7 +14,8 @@ const getAllUser = asyncHandler(async(req:Request,res:Response,next:NextFunction
         success:true,
         message:"All users fetched successfully",
         statuscode: httpStatus.OK,
-        data:usersList,
+        data:usersList.data,
+        meta:usersList.meta
      })
 
 })
