@@ -66,8 +66,29 @@ const getPaymentHistory = asyncHandler(async (req: Request, res: Response, next:
         meta: paymentHistory.meta
     });
 });
+
+const paymentSuccess = asyncHandler(async (req: Request, res: Response, next: NextFunction) => { 
+
+     return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Payment success page",
+        data: null
+    });
+})
+
+const paymentCancelled = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    return sendResponse(res, {
+        success: true,
+        statuscode: httpStatus.OK,
+        message: "Payment cancelled page",
+        data: null
+    });
+})
 export const paymentController = {
     createCheckoutSession,
     handleStripeWebhook,
-    getPaymentHistory
+    getPaymentHistory,
+    paymentSuccess,
+    paymentCancelled
 }

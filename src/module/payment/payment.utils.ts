@@ -116,8 +116,8 @@ export const rentalPaymentSession = async(userId: string, rentalOrderId: string)
         }
     ],
             mode: "payment",
-            success_url: `${config.app_url}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${config.app_url}/payment-cancelled`,
+            success_url: `${config.app_url}/payment/payment-success`,
+            cancel_url: `${config.app_url}/payment/payment-cancelled`,
             metadata: {
                 rentalOrderId: rentalOrder.id,
                 paymentType: paymentType.RENTAL,
