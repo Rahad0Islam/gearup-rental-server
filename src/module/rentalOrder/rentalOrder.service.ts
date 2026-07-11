@@ -17,9 +17,9 @@ const createRentalOrderInDb = async (rentalOrderData: IrentalOrder,customerId: s
   const pickup = new Date(pickupDate);
   const returned = new Date(returnDate);
   
-  //  if(pickup < new Date()) {
-  //   throw new Error("Pickup date cannot be in the past.");
-  // }
+   if(pickup < new Date()) {
+    throw new Error("Pickup date cannot be in the past.");
+  }
 
   if (pickup >= returned) {
     throw new Error("Return date must be after pickup date.");
@@ -361,6 +361,7 @@ const pickupRentalOrderInDb = async (rentalOrderId: string, role: string) => {
   if(rentalOrder.returnDate < new Date()){
     throw new Error("Pickup date cannot be after the return date.");
   }
+ 
   if(rentalOrder.pickupDate > new Date()){
     throw new Error("Pickup date is later than the current date.");
   }

@@ -1,0 +1,1134 @@
+{
+  "info": {
+    "_postman_id": "bd84dcf8-3542-4090-b223-4aaba0fc8ffb",
+    "name": "GearUP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50524295",
+    "_collection_link": "https://go.postman.co/collection/50524295-bd84dcf8-3542-4090-b223-4aaba0fc8ffb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth-module",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\":\"Customer2\",\n    \"email\":\"customar2@gmail.com\",\n    \"password\":\"123\",\n    \"role\":\"CUSTOMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/auth/register",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"admin@gmail.com\",\n    \"password\":\"123\"\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/auth/login",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "refreshtoken",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/auth/refreshtoken",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refreshtoken"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "about-me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/auth/me",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rentalOrderId\":\"abb3f23e-a401-4c1c-9776-d3c44f069dd1\",\n    \"rating\":5,\n    \"comment\":\"wonderfull\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/auth/logout",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "category-module",
+      "item": [
+        {
+          "name": "addCategory",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Adventure Sports\",\n  \"description\": \"Rock climbing, mountaineering, rappelling, and adventure safety equipment.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/category/addcategory",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "addcategory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateCategory",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n     \"name\": \"Football\"\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/category/updatecategory/790e1fcc-d491-4913-acd6-405a6455b89a",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "updatecategory",
+                "790e1fcc-d491-4913-acd6-405a6455b89a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteCategory",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n     \"name\": \"fitness2\"\n   \n\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/category/deletecategory/790e1fcc-d491-4913-acd6-405a6455b89a",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "deletecategory",
+                "790e1fcc-d491-4913-acd6-405a6455b89a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getCategoryByid",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/category/92cdad77-2700-4dd6-a60f-145bf1271107",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "92cdad77-2700-4dd6-a60f-145bf1271107"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllcategory",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/category",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "category"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "football",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "football",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "it was  awesome! ",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "id",
+                  "value": null,
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "all gear by category",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mountain Bike\",\n  \"description\": \"A high-performance mountain bike suitable for off-road trails and outdoor adventures.\",\n  \"rentPricePerDay\": 700,\n  \"discountPrice\": 650,\n  \"stock\": 10,\n  \"image\": \"https://example.com/images/mountain-bike.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/gear/category/92cdad77-2700-4dd6-a60f-145bf1271107",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "gear",
+                "category",
+                "92cdad77-2700-4dd6-a60f-145bf1271107"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all gear by provider id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mountain Bike\",\n  \"description\": \"A high-performance mountain bike suitable for off-road trails and outdoor adventures.\",\n  \"rentPricePerDay\": 700,\n  \"discountPrice\": 650,\n  \"stock\": 10,\n  \"image\": \"https://example.com/images/mountain-bike.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/gear/provider/1aa89e2c-6f00-4e4c-a002-75508fc09210",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "gear",
+                "provider",
+                "1aa89e2c-6f00-4e4c-a002-75508fc09210"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "gear-module",
+      "item": [
+        {
+          "name": "addGear",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Black Diamond Climbing Harness\",\n  \"description\": \"Lightweight climbing harness suitable for indoor and outdoor rock climbing.\",\n  \"rentPricePerDay\": 350,\n  \"discountPrice\": 40,\n  \"stock\": 6,\n  \"brand\": \"Black Diamond\",\n  \"image\": \"https://example.com/images/climbing-harness.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/gear/4f1acf2f-b5cc-4f57-b881-c19383c33afd",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "gear",
+                "4f1acf2f-b5cc-4f57-b881-c19383c33afd"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateGear",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \n  \"discountPrice\":10,\n  \"stock\":50\n  \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/gear/279973c7-e393-47c4-8f15-e16b24a5de",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "gear",
+                "279973c7-e393-47c4-8f15-e16b24a5de"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-gear",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \n  \"discountPrice\": 4\n  \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/gear/8b9a4247-051a-40df-afa5-7db54f3b1028",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "gear",
+                "8b9a4247-051a-40df-afa5-7db54f3b1028"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all gear",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mountain Bike\",\n  \"description\": \"A high-performance mountain bike suitable for off-road trails and outdoor adventures.\",\n  \"rentPricePerDay\": 700,\n  \"discountPrice\": 650,\n  \"stock\": 10,\n  \"image\": \"https://example.com/images/mountain-bike.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/v1/gear/45b7e656-5028-4b07-bc1c-f3f6580894c6",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "v1",
+                "gear",
+                "45b7e656-5028-4b07-bc1c-f3f6580894c6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "rentalOrder",
+      "item": [
+        {
+          "name": "create - rental-order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupDate\": \"2026-07-08T09:00:00.000Z\",\n  \"returnDate\": \"2026-07-25T09:00:00.000Z\",\n  \"items\": [\n    {\n      \"gearItemId\": \"279973c7-e393-47c4-8f15-e16b24a5dea7\",\n      \"quantity\":2\n    },\n     {\n      \"gearItemId\": \"99145336-ccdd-4393-b644-375bd33e61fe\",\n      \"quantity\":3\n    }\n   \n   \n    \n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all rentalOrder filter by RBAC",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupDate\": \"2026-07-10T09:00:00.000Z\",\n  \"returnDate\": \"2026-07-13T09:00:00.000Z\",\n  \"items\": [\n    {\n      \"gearItemId\": \"45b7e656-5028-4b07-bc1c-f3f6580894c6\",\n      \"quantity\": 1\n    },\n    {\n      \"gearItemId\": \"b9b9307b-2b52-4320-bf9f-31c55da5ba86\",\n      \"quantity\": 2\n    }\n    \n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get rental-order by rental-order id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupDate\": \"2026-07-10T09:00:00.000Z\",\n  \"returnDate\": \"2026-07-13T09:00:00.000Z\",\n  \"items\": [\n    {\n      \"gearItemId\": \"45b7e656-5028-4b07-bc1c-f3f6580894c6\",\n      \"quantity\": 1\n    },\n    {\n      \"gearItemId\": \"b9b9307b-2b52-4320-bf9f-31c55da5ba86\",\n      \"quantity\": 2\n    }\n    \n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/aac3b016-fb46-454b-b998-bf29e86b902b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "aac3b016-fb46-454b-b998-bf29e86b902b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete - rental order",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupDate\": \"2026-07-10T09:00:00.000Z\",\n  \"returnDate\": \"2026-07-13T09:00:00.000Z\",\n  \"items\": [\n    {\n      \"gearItemId\": \"45b7e656-5028-4b07-bc1c-f3f6580894c6\",\n      \"quantity\": 1\n    },\n    {\n      \"gearItemId\": \"b9b9307b-2b52-4320-bf9f-31c55da5ba86\",\n      \"quantity\": 2\n    }\n    \n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/abb3f23e-a401-4c1c-9776-d3c44f069dd1",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "abb3f23e-a401-4c1c-9776-d3c44f069dd1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "pickup rental order",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupDate\": \"2026-07-10T09:00:00.000Z\",\n  \"returnDate\": \"2026-07-13T09:00:00.000Z\",\n  \"items\": [\n    {\n      \"gearItemId\": \"45b7e656-5028-4b07-bc1c-f3f6580894c6\",\n      \"quantity\": 1\n    },\n    {\n      \"gearItemId\": \"b9b9307b-2b52-4320-bf9f-31c55da5ba86\",\n      \"quantity\": 2\n    }\n    \n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/pickup/aac3b016-fb46-454b-b998-bf29e86b902b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "pickup",
+                "aac3b016-fb46-454b-b998-bf29e86b902b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "return rental-order",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupDate\": \"2026-07-10T09:00:00.000Z\",\n  \"returnDate\": \"2026-07-13T09:00:00.000Z\",\n  \"items\": [\n    {\n      \"gearItemId\": \"45b7e656-5028-4b07-bc1c-f3f6580894c6\",\n      \"quantity\": 1\n    },\n    {\n      \"gearItemId\": \"b9b9307b-2b52-4320-bf9f-31c55da5ba86\",\n      \"quantity\": 2\n    }\n    \n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/return/aac3b016-fb46-454b-b998-bf29e86b902b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "return",
+                "aac3b016-fb46-454b-b998-bf29e86b902b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "confirm - rental order",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/confirm/aac3b016-fb46-454b-b998-bf29e86b902b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "confirm",
+                "aac3b016-fb46-454b-b998-bf29e86b902b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "cancel rental-order",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/cancel/aac3b016-fb46-454b-b998-bf29e86b902b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "cancel",
+                "aac3b016-fb46-454b-b998-bf29e86b902b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get rental status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/rental-order/orderStatus/aac3b016-fb46-454b-b998-bf29e86b902b",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "rental-order",
+                "orderStatus",
+                "aac3b016-fb46-454b-b998-bf29e86b902b"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "payment",
+      "item": [
+        {
+          "name": "create - checkout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rentalOrderId\":\"aac3b016-fb46-454b-b998-bf29e86b902b\",\n    \"paymentType\":\"RENTAL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/payment/checkout",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "checkout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "payment-history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/v1/payment/payment-history",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "payment-history"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "review",
+      "item": [
+        {
+          "name": "create-review",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rentalOrderId\":\"cfba110e-4d0b-4cb4-8b5d-f4436e551343\",\n    \"rating\":5,\n    \"comment\":\"wonderfull\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/review",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "review"
+              ],
+              "query": [
+                {
+                  "key": "gearitemId",
+                  "value": "b9b9307b-2b52-4320-bf9f-31c55da5ba86",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "find rating and review with gearItemID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rentalOrderId\":\"abb3f23e-a401-4c1c-9776-d3c44f069dd1\",\n    \"rating\":5,\n    \"comment\":\"wonderfull\"\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/review/279973c7-e393-47c4-8f15-e16b24a5dea7",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "review",
+                "279973c7-e393-47c4-8f15-e16b24a5dea7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete review",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rentalOrderId\":\"abb3f23e-a401-4c1c-9776-d3c44f069dd1\",\n    \"rating\":5,\n    \"comment\":\"wonderfull\"\n}"
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/review/b9b9307b-2b52-4320-bf9f-31c55da5ba86",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "review",
+                "b9b9307b-2b52-4320-bf9f-31c55da5ba86"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update review",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \n    \"rating\":4\n    \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/review/d9132f15-fedf-442d-9884-050f1f86bb67",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "review",
+                "d9132f15-fedf-442d-9884-050f1f86bb67"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "al gear iteam rating",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/review",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "review"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "item": [
+        {
+          "name": "get all users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base-url}}/api/v1/admin/getalluser?activeStatus=SUSPENDED",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "getalluser"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1a5e1a7d-1aed-4429-9ccb-b0bb812e23e4",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "name",
+                  "value": "rahad islam",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "r",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "2",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "2",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "activeStatus",
+                  "value": "SUSPENDED",
+                  "type": "text"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "users status updated",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\":\"SUSPENDED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/api/v1/admin/updateuser-status/26496d52-c0da-4769-aef7-9f5576013c9c",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "updateuser-status",
+                "26496d52-c0da-4769-aef7-9f5576013c9c"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base-url",
+      "value": "https://gearup-backend-self.vercel.app"
+    }
+  ]
+}
